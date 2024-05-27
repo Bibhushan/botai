@@ -1,11 +1,14 @@
 import './App.css';
-import { Box, Grid } from '@mui/material';
+import { Grid } from '@mui/material';
 import PastChats from './components/PastChats';
 import ChatWindow from './components/ChatWindow';
 import { useEffect, useState } from 'react';
 import menu from './assets/menu.png';
+import sampleData from './assets/sampleData.json'
 
 function App() {
+
+  const data = sampleData;
 
   const [showMenu, setShowMenu] = useState(true);
   const [showMiniMenu, setShowMiniMenu] = useState(false);
@@ -16,6 +19,7 @@ function App() {
 
   useEffect(()=>{
 
+    // console.log('sampleData', data);
     const handleResize = ()=>{
       if(window.innerWidth < 768){
         setShowMenu(false)
@@ -34,11 +38,11 @@ function App() {
     <div className="App">
       <Grid container>
         {showMenu &&
-          <Grid item sm={3}>
+          <Grid item sm={2}>
             <PastChats/>
           </Grid>
         }
-        <Grid item sm={9} 
+        <Grid item sm={10} 
           style={{background: 'linear-gradient(180deg, rgba(215, 199, 244, 0.2) 0%, rgba(151, 133, 186, 0.2) 100%)', padding:'0.5rem 1rem'}} 
         >
           <div style={{display:'flex', alignItems:'center'}}>
@@ -54,7 +58,7 @@ function App() {
             }
             <h1 style={{textAlign:'left', color:'#9785BA', padding:0, margin:0}}>Bot AI</h1>
           </div>
-          <ChatWindow />
+          <ChatWindow chatData={data}/>
         </Grid>
       </Grid>
     </div>
