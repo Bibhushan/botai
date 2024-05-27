@@ -1,23 +1,19 @@
-import logo from './logo.svg';
 import './App.css';
+import { Box, Grid } from '@mui/material';
+import PastChats from './components/PastChats';
+import ChatWindow from './components/ChatWindow';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Grid container>
+        <Grid item md={2}>
+          <PastChats/>
+        </Grid>
+        <Grid item md={10} className='secondary'>
+          <ChatWindow />
+        </Grid>
+      </Grid>
     </div>
   );
 }
