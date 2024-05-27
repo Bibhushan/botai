@@ -17,7 +17,12 @@ export default function ChatResponse({isBot, response, time}){
     }
 
     return(
-        <div className='chat-response' style={{display:'flex'}} onMouseEnter={showLikeDislike} onMouseLeave={showLikeDislike}>
+        <Card 
+            className='chat-response' 
+            onMouseEnter={showLikeDislike} 
+            onMouseLeave={showLikeDislike}
+            style={{display:'flex', alignItems:'center', borderRadius:'20px', margin:'0.5rem', backgroundColor:'#D7C7F421'}}
+        >
             <img src={isBot ? bot : you} alt='chat' style={{height:'100%', width:65, padding:'1rem'}}/>
             <div style={{textAlign:'left'}}>
                 <p style={{fontWeight:'bold', padding:'0.5rem', margin:0}}>{isBot ? 'Soul AI' : 'You'}</p>
@@ -32,6 +37,6 @@ export default function ChatResponse({isBot, response, time}){
                     }
                 </div>
             </div>
-        </div>
+        </Card>
     )    
 }
