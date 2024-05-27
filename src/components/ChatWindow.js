@@ -1,5 +1,5 @@
 import { Grid } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import logo from '../assets/botAI.png';
 import ChatResponse from './ChatResponse';
 import QuestionCard from './QuestionCard';
@@ -11,34 +11,63 @@ const chats=[
     {question:'Hi, how are you', answer: 'Get immediate AI generated response'},
 ]
 
+const getCurrTime = ()=>{
+    let currTime = new Date()
+    let strTime = currTime.toLocaleTimeString('en-IN', {hours:'numeric', minutes:'numeric', seconds:'none'}).toUpperCase();
+    return strTime;
+}
+
 export default function ChatWindow({chatData}){
 
     const topChats = chats; 
 
     const [currInput, setCurrInput] = useState('');
 
+    const [currQuestion, setCurrQuestion] = useState('');
+
     const [conversation, setConversation] = useState([]);
+
+    const [isCardQuestion, setIsCardQuestion] = useState(false);
 
     const handleInput = (event)=>{
         setCurrInput(event.target.value)
     }
 
-    const addInput = (question)=>{
-        let currTime = new Date()
-        let strTime = currTime.toLocaleTimeString('en-IN', {hours:'numeric', minutes:'numeric'})
-        setConversation([...conversation, {isBot:false, response:question, time:strTime}])
-        if (conversation.length <= 1){
-            setConversation([...conversation, {isBot:true, response:'Hi There. How can I assist you today?', time:strTime}]);
-        }else{
-            console.log('chatData', chatData);
-            let result = chatData.filter((item)=>{return item.question.toLowerCase === question.toLowerCase()});
-            if (result.length === 0){
-                setConversation([...conversation, {isBot:true, response:'As an AI Language Model, I don’t have the details', time:strTime}]);
-            } else {
-                setConversation([...conversation, {isBot:true, response:result[0].response, time:strTime}]);
-            }
-        }
+    const addQuestion = ()=>{
+        setCurrQuestion(currInput);
+        setIsCardQuestion(false);
     }
+
+    const setCardQuestion = (question)=>{
+        setIsCardQuestion(true);
+        setCurrQuestion(question);
+    }
+
+    useEffect(()=> {
+        if (currQuestion.length>0){
+            let strTime = getCurrTime();
+            setConversation([...conversation, {isBot:false, response:currQuestion, time:strTime}]);
+        }
+    }, [currQuestion])
+
+    useEffect(()=>{
+        if (currQuestion.length > 0){
+            let strTime = getCurrTime();
+            if ((conversation.length <= 1 && isCardQuestion === false) || ['hi', 'hello'].includes(currQuestion.toLowerCase())){
+                setConversation([...conversation, {isBot:true, response:'Hi There. How can I assist you today?', time:strTime}]);
+            }
+            else{
+                console.log('finding answer to: ', currQuestion)
+                let result = chatData.filter((item)=>{return item.question.toLowerCase() === currQuestion.toLowerCase()});
+                if (result.length === 0){
+                    setConversation([...conversation, {isBot:true, response:'As an AI Language Model, I don’t have the details', time:strTime}]);
+                } else {
+                    setConversation([...conversation, {isBot:true, response:result[0].response, time:strTime}]);
+                }                
+            }
+            setCurrQuestion('');
+        }
+    }, [conversation])
 
     return(
         <div>
@@ -53,14 +82,16 @@ export default function ChatWindow({chatData}){
                             question={chat.question} 
                             answer={chat.answer} 
                             key={'key-card-'+index}                 
-                            onClick = {()=>addInput(chat.question)}/>
+                            onClickHandler = {()=>setCardQuestion(chat.question)}/>
                         )}
                     </Grid>
                 </div>
             :
-                conversation.map((response, index)=>
-                    <ChatResponse isBot={response.isBot} response={response.response} time={response.time} key={'response-' + index}/>
-                )
+                <div style={{maxHeight:600, overflowY:'auto'}}>
+                    {conversation.map((response, index)=>
+                            <ChatResponse isBot={response.isBot} response={response.response} time={response.time} key={'response-' + index}/>
+                    )}
+                </div>
             }
             <div style={{display:'flex', justifyContent:'center', alignItems:'center', margin:'1rem 0rem'}}>
                 <input 
@@ -71,7 +102,7 @@ export default function ChatWindow({chatData}){
                 />
                 <button 
                     className='bot-button chat-button'
-                    onClick={()=>addInput(currInput)}
+                    onClick={addQuestion}
                 >
                     Ask
                 </button>

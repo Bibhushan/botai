@@ -10,4 +10,6 @@ Once the user has completed a conversation, the chat gets saved. This chat can b
 revisited from a panel on the side/top bar. While viewing a past conversation, the user
 is also able to see the feedback provided. 
 
+## Chat Window
 
+By default 
