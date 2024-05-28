@@ -3,11 +3,11 @@ import ChatResponse from "./ChatResponse";
 import { ConversationContext } from "./ConversationContext";
 
 
-export default function ConversationBox(){
+export default function ConversationBox({conversation, responseHandler, isReadOnly=false}){
 
-    const {conversation, updateResponse} = useContext(ConversationContext);
+    // const {conversation, updateResponse} = useContext(ConversationContext);
 
-    // console.log('conv',conversation);
+    console.log('conv',conversation);
 
     return (
         <div style={{maxHeight:600, overflowY:'auto'}}>
@@ -16,7 +16,8 @@ export default function ConversationBox(){
                         id={index}
                         response={response} 
                         key={'response-' + index}
-                        responseHandler={updateResponse}
+                        responseHandler={responseHandler}
+                        isReadOnly={isReadOnly}
                     />
             )}
         </div>

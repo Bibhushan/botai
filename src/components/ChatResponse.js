@@ -20,14 +20,15 @@ const style = {
     p: 4,
   };
 
-export default function ChatResponse({id, response, responseHandler}){
+export default function ChatResponse({id, response, responseHandler, isReadOnly=false}){
 
     const [likeDislike, setLikeDislike] = useState(false);
     const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
     const [feedbackText, setFeedbackText] = useState('');
 
     const showLikeDislike = ()=>{
-        if (response.isBot){
+        console.log('isReadOnly', isReadOnly);
+        if (response.isBot && isReadOnly === false){
             setLikeDislike(true);
         }
     }

@@ -6,13 +6,14 @@ export default function ChatHistory({history}){
     const [rating, setRating] = useState(0);
 
     const [currHistory, setCurrHistory] = useState(history);
-
+   
     const handleRating = (event)=>{
         // console.log(event.target.value);
         setRating(parseInt(event.target.value));
     }
 
     useEffect(()=>{
+        console.log('currHistory', currHistory);
         if (rating === 0){
             setCurrHistory(history);
         } else {
@@ -31,13 +32,11 @@ export default function ChatHistory({history}){
                 <option value={4}>4 Star</option>
                 <option value={5}>5 Star</option>
             </select>
-            {currHistory.map((chat)=>{
-                return(
-                    <div style={{textAlign:'left'}}>
+            {currHistory.map((chat)=>{             
+                    return <div style={{textAlign:'left'}}>
                         <h3>{chat.date}</h3>
-                        <ConversationBox conversation={chat.responses}/>
-                    </div>
-                )
+                        <ConversationBox conversation={chat} isReadOnly={true}/>
+                    </div>                  
             })
 
             }

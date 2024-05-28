@@ -161,6 +161,7 @@ function App() {
                 cardQuestionHandler = {setCardQuestion}
                 conversation = {conversation}
                 saveConversationHandler={saveConversationHandler}
+                responseHandler={updateResponse}
               />
           }
           </ConversationContext.Provider>

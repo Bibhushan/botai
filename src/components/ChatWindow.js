@@ -12,7 +12,7 @@ const chats=[
     {question:'Hi, how are you', answer: 'Get immediate AI generated response'},
 ]
 
-export default function ChatWindow({inputHandler, questionHandler, cardQuestionHandler, conversation, saveConversationHandler}){
+export default function ChatWindow({inputHandler, questionHandler, cardQuestionHandler, conversation, saveConversationHandler, responseHandler}){
 
     const topChats = chats; 
 
@@ -85,7 +85,7 @@ export default function ChatWindow({inputHandler, questionHandler, cardQuestionH
                     </Grid>
                 </div>
             :
-                <ConversationBox/>
+                <ConversationBox conversation={conversation} responseHandler={responseHandler}/>
             }
             <div style={{display:'flex', justifyContent:'center', alignItems:'center', margin:'1rem 0rem'}}>
                 <input 
