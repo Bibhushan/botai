@@ -1,8 +1,8 @@
 import { Grid } from '@mui/material';
-import { useEffect, useState } from 'react';
+// import { useEffect, useState } from 'react';
 import logo from '../assets/botAI.png';
 import QuestionCard from './QuestionCard';
-import useLocalStorage from 'use-local-storage';
+// import useLocalStorage from 'use-local-storage';
 import ConversationBox from './ConversationBox';
 
 const chats=[
@@ -12,76 +12,60 @@ const chats=[
     {question:'Hi, how are you', answer: 'Get immediate AI generated response'},
 ]
 
-const getCurrTime = ()=>{
-    let currTime = new Date()
-    let strTime = currTime.toLocaleTimeString('en-IN', {hours:'numeric', minutes:'numeric'}).toUpperCase();
-    return strTime;
-}
-
-const getCurrDate = ()=>{
-    let currTime = new Date()
-    let strTime = currTime.toLocaleTimeString('en-IN', {year:'numeric', month:'long', day:'numeric'}).toUpperCase();
-    return strTime;
-}
-
-export default function ChatWindow({chatData}){
+export default function ChatWindow({inputHandler, questionHandler, cardQuestionHandler, conversation, saveConversationHandler, likeDislikeHandler}){
 
     const topChats = chats; 
 
-    const [currInput, setCurrInput] = useState('');
+    // const [currInput, setCurrInput] = useState('');
 
-    const [currQuestion, setCurrQuestion] = useState('');
+    // const [currQuestion, setCurrQuestion] = useState('');
 
-    const [conversation, setConversation] = useState({date:'', responses:[], feedback:''});
+    // const [conversation, setConversation] = useState({date:'', responses:[], feedback:''});
 
-    const [isCardQuestion, setIsCardQuestion] = useState(false);
+    // const [isCardQuestion, setIsCardQuestion] = useState(false);
 
-    const[pastConversations, setPastConversations] = useLocalStorage('botai-conversations', '');
+    // const[pastConversations, setPastConversations] = useLocalStorage('botai-conversations', '');
 
-    const handleInput = (event)=>{
-        setCurrInput(event.target.value)
-    }
+    // const addQuestion = ()=>{
+    //     setCurrQuestion(currInput);
+    //     setIsCardQuestion(false);
+    // }
 
-    const addQuestion = ()=>{
-        setCurrQuestion(currInput);
-        setIsCardQuestion(false);
-    }
+    // const setCardQuestion = (question)=>{
+    //     setIsCardQuestion(true);
+    //     setCurrQuestion(question);
+    // }
 
-    const setCardQuestion = (question)=>{
-        setIsCardQuestion(true);
-        setCurrQuestion(question);
-    }
+    // const handleSaveConversation = ()=>{
+    //     setPastConversations([...pastConversations, conversation]);
+    // }
 
-    const handleSaveConversation = ()=>{
-        setPastConversations([...pastConversations, conversation]);
-    }
+    // useEffect(()=> {
+    //     if (currQuestion.length>0){
+    //         let strTime = getCurrTime();
+    //         setConversation({...conversation, responses:[...conversation.responses, {isBot:false, response:currQuestion, time:strTime}]});
+    //     }
+    // }, [currQuestion])
 
-    useEffect(()=> {
-        if (currQuestion.length>0){
-            let strTime = getCurrTime();
-            setConversation({...conversation, responses:[...conversation.responses, {isBot:false, response:currQuestion, time:strTime}]});
-        }
-    }, [currQuestion])
-
-    useEffect(()=>{
-        if (currQuestion.length > 0){
-            let strTime = getCurrTime();
-            if ((conversation.length <= 1 && isCardQuestion === false) || ['hi', 'hello'].includes(currQuestion.toLowerCase())){
-                setConversation({...conversation, date:getCurrDate()})
-                setConversation({...conversation, responses:[...conversation.responses, {isBot:true, response:'Hi There. How can I assist you today?', time:strTime}]});
-            }
-            else{
-                console.log('finding answer to: ', currQuestion)
-                let result = chatData.filter((item)=>{return item.question.toLowerCase() === currQuestion.toLowerCase()});
-                if (result.length === 0){
-                    setConversation({...conversation, responses:[...conversation.responses, {isBot:true, response:'As an AI Language Model, I don’t have the details', time:strTime}]});
-                } else {
-                    setConversation({...conversation, responses:[...conversation.responses, {isBot:true, response:result[0].response, time:strTime}]});
-                }                
-            }
-            setCurrQuestion('');
-        }
-    }, [conversation])
+    // useEffect(()=>{
+    //     if (currQuestion.length > 0){
+    //         let strTime = getCurrTime();
+    //         if ((conversation.length <= 1 && isCardQuestion === false) || ['hi', 'hello'].includes(currQuestion.toLowerCase())){
+    //             setConversation({...conversation, date:getCurrDate()})
+    //             setConversation({...conversation, responses:[...conversation.responses, {isBot:true, response:'Hi There. How can I assist you today?', time:strTime}]});
+    //         }
+    //         else{
+    //             console.log('finding answer to: ', currQuestion)
+    //             let result = chatData.filter((item)=>{return item.question.toLowerCase() === currQuestion.toLowerCase()});
+    //             if (result.length === 0){
+    //                 setConversation({...conversation, responses:[...conversation.responses, {isBot:true, response:'As an AI Language Model, I don’t have the details', time:strTime}]});
+    //             } else {
+    //                 setConversation({...conversation, responses:[...conversation.responses, {isBot:true, response:result[0].response, time:strTime}]});
+    //             }                
+    //         }
+    //         setCurrQuestion('');
+    //     }
+    // }, [conversation])
 
     return(
         <div>
@@ -96,30 +80,30 @@ export default function ChatWindow({chatData}){
                             question={chat.question} 
                             answer={chat.answer} 
                             key={'key-card-'+index}                 
-                            onClickHandler = {()=>setCardQuestion(chat.question)}/>
+                            onClickHandler = {()=>cardQuestionHandler(chat.question)}/>
                         )}
                     </Grid>
                 </div>
             :
-                <ConversationBox conversation={conversation}/>
+                <ConversationBox conversation={conversation} likeDislikeHandler={likeDislikeHandler}/>
             }
             <div style={{display:'flex', justifyContent:'center', alignItems:'center', margin:'1rem 0rem'}}>
                 <input 
                     id='chat-input'
                     style={{padding:'0.5rem 1rem', borderRadius:'5px', border:'1px solid #00000073', width:'100%', margin:'0.5rem 0.5rem 0.5rem 0rem'}} 
                     type='text'
-                    onChange={handleInput}
+                    onChange={inputHandler}
                     placeholder='Chat with AI model powered by Soul AI'
                 />
                 <button 
                     className='bot-button chat-button'
-                    onClick={addQuestion}
+                    onClick={questionHandler}
                 >
                     Ask
                 </button>
                 <button 
                     className='bot-button chat-button' 
-                    onClick={handleSaveConversation}
+                    onClick={saveConversationHandler}
                 >
                     Save
                 </button>
