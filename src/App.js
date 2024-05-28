@@ -7,6 +7,7 @@ import menu from './assets/menu.png';
 import sampleData from './assets/sampleData.json'
 import useLocalStorage from 'use-local-storage';
 import { getCurrDate, getCurrTime } from './helpers/DateTime';
+import { ConversationContext } from './components/ConversationContext';
 
 function App() {
 
@@ -40,31 +41,48 @@ function App() {
     setCurrQuestion(question);
   }
 
+  const addResponse = (isBot, response)=>{
+    let strTime = getCurrTime();
+    setConversation({...conversation, responses:[...conversation.responses, 
+            {isBot:{isBot}, response:response, time:strTime, rating:0, feedback:''}]})
+  }
+
+  const updateResponse = (index, feedback, rating)=>{
+    let conv_copy = [...conversation.responses];
+    conv_copy[index].feedback = feedback;
+    conv_copy[index].rating = rating;
+    setConversation({...conversation, responses:conv_copy});
+  }
+
   const saveConversationHandler = ()=>{
     setPastConversations([...pastConversations, conversation]);
   }
 
   useEffect(()=> {
       if (currQuestion.length>0){
-          let strTime = getCurrTime();
-          setConversation({...conversation, responses:[...conversation.responses, {isBot:false, response:currQuestion, time:strTime}]});
+          addResponse(false, currQuestion)
+          // let strTime = getCurrTime();
+          // setConversation({...conversation, responses:[...conversation.responses, {isBot:false, response:currQuestion, time:strTime, rating:0, feedback:''}]});
       }
   }, [currQuestion])
 
   useEffect(()=>{
       if (currQuestion.length > 0){
-          let strTime = getCurrTime();
+          // let strTime = getCurrTime();
           if ((conversation.length <= 1 && isCardQuestion === false) || ['hi', 'hello'].includes(currQuestion.toLowerCase())){
               setConversation({...conversation, date:getCurrDate()})
-              setConversation({...conversation, responses:[...conversation.responses, {isBot:true, response:'Hi There. How can I assist you today?', time:strTime}]});
+              addResponse(true, 'Hi There. How can I assist you today?')
+              // setConversation({...conversation, responses:[...conversation.responses, {isBot:true, response:'Hi There. How can I assist you today?', time:strTime, rating:0, feedback:''}]});
           }
           else{
               console.log('finding answer to: ', currQuestion)
               let result = data.filter((item)=>{return item.question.toLowerCase() === currQuestion.toLowerCase()});
               if (result.length === 0){
-                  setConversation({...conversation, responses:[...conversation.responses, {isBot:true, response:'As an AI Language Model, I don’t have the details', time:strTime}]});
+                addResponse(true, 'As an AI Language Model, I don’t have the details')
+                  // setConversation({...conversation, responses:[...conversation.responses, {isBot:true, response:'As an AI Language Model, I don’t have the details', time:strTime, rating:0, feedback:''}]});
               } else {
-                  setConversation({...conversation, responses:[...conversation.responses, {isBot:true, response:result[0].response, time:strTime}]});
+                addResponse(true, result[0].response)
+                  // setConversation({...conversation, responses:[...conversation.responses, {isBot:true, response:result[0].response, time:strTime}]});
               }                
           }
           setCurrQuestion('');
@@ -112,13 +130,15 @@ function App() {
             }
             <h1 style={{textAlign:'left', color:'#9785BA', padding:0, margin:0}}>Bot AI</h1>
           </div>
-          <ChatWindow 
-            inputHandler={inputHandler} 
-            questionHandler={questionHandler}
-            cardQuestionHandler = {setCardQuestion}
-            conversation = {conversation}
-            saveConversationHandler={saveConversationHandler}
-          />
+          <ConversationContext.Provider value={{conversation, updateResponse}} >
+            <ChatWindow 
+              inputHandler={inputHandler} 
+              questionHandler={questionHandler}
+              cardQuestionHandler = {setCardQuestion}
+              conversation = {conversation}
+              saveConversationHandler={saveConversationHandler}
+            />
+          </ConversationContext.Provider>
         </Grid>
       </Grid>
     </div>

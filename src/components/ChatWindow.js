@@ -85,7 +85,7 @@ export default function ChatWindow({inputHandler, questionHandler, cardQuestionH
                     </Grid>
                 </div>
             :
-                <ConversationBox conversation={conversation}/>
+                <ConversationBox/>
             }
             <div style={{display:'flex', justifyContent:'center', alignItems:'center', margin:'1rem 0rem'}}>
                 <input 

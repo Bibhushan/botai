@@ -1,4 +1,4 @@
-import { Box, Card, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Modal, TextField } from "@mui/material";
+import { Box, Card, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Modal, Rating, TextField } from "@mui/material";
 import bot from '../assets/botAI.png';
 import you from '../assets/You.png';
 import ThumbUpAltOutlined from "@mui/icons-material/ThumbUpAltOutlined";
@@ -7,7 +7,6 @@ import './styles.css';
 import { useEffect, useState } from "react";
 import feedback from '../assets/feedback.png';
 import CloseIcon from '@mui/icons-material/Close';
-import Close from "@mui/icons-material/Close";
 
 const style = {
     position: 'absolute',
@@ -21,7 +20,7 @@ const style = {
     p: 4,
   };
 
-export default function ChatResponse({response, responseHandler}){
+export default function ChatResponse({id, response, responseHandler}){
 
     const [likeDislike, setLikeDislike] = useState(false);
     const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
@@ -48,8 +47,18 @@ export default function ChatResponse({response, responseHandler}){
         setIsFeedbackOpen(false);
     }
 
-    const submitFeedback = ()=>{
+    const updateFeedbackText = (event)=>{
+        setFeedbackText(event.target.value);
+    }
 
+    const submitFeedback = ()=>{
+        responseHandler(id, feedbackText, response.rating);
+        setIsFeedbackOpen(false);
+    }
+
+
+    const updateRating = (event)=>{
+        responseHandler(id, response.feedback, event.target.value);        
     }
 
     return(
@@ -65,13 +74,19 @@ export default function ChatResponse({response, responseHandler}){
                 <p style={{padding:'0.5rem', margin:0}}>{response.response}</p>
                 <div style={{display:'flex', padding:0, alignItems:'center', fontSize:12}}>
                     <p style={{padding:'0.5rem'}}>{response.time}</p>
+                    {response.feedback.length>0 && <Rating value={response.rating} onChange={updateRating}/>}
                     {likeDislike && 
-                        <div>
+                        <div>                            
                             <ThumbUpAltOutlined onClick={likeDislikeHandler} sx={{padding:'0.5rem', opacity:'50%'}}/>
                             <ThumbDownAltOutlined onClick = {likeDislikeHandler} sx={{padding:'0.5rem', opacity:'50%'}}/>
                         </div>
-                    }
+                    }                    
                 </div>
+                {response.feedback.length > 0 && 
+                    <p style={{padding:0, padding:0.5}}>
+                        <span style={{fontWeight:'bold'}}>Response: </span> 
+                        {response.feedback}
+                    </p>}
             </div>
             <Dialog
                 open={isFeedbackOpen}
@@ -86,10 +101,21 @@ export default function ChatResponse({response, responseHandler}){
                     <CloseIcon onClick={closeFeedback} sx={{padding:'0.5rem 1rem'}}/>
                 </div>
                 <DialogContent>
-                    <textarea rows={10} cols={60}>{feedbackText}</textarea>
+                    <textarea rows={10} cols={50} onChange={updateFeedbackText}
+                        style={{fontSize:16, margin:'1rem'}}
+                    >
+                        {response.feedback}
+                    </textarea>
                 </DialogContent>
                 <DialogActions>
-                    <button className='chat-button' style={{backgroundColor:'#9785BA'}} onClick={{submitFeedback}}>Submit Feedback</button>
+                    <button 
+                        className='chat-button' 
+                        style={{backgroundColor:'#9785BA', padding:'0.5rem 1rem', margin:0}} 
+                        onClick={submitFeedback}
+                        disabled={feedbackText.length <=0}
+                    >
+                        Submit
+                    </button>
                 </DialogActions>
             </Dialog>
         </Card>

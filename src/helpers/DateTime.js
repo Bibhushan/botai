@@ -1,14 +1,15 @@
 
-const getCurrTime = ()=>{
+function getCurrTime(){
     let currTime = new Date()
     let strTime = currTime.toLocaleTimeString('en-IN', {hours:'numeric', minutes:'numeric'}).toUpperCase();
+    console.log('time', strTime);
     return strTime;
 }
 
-const getCurrDate = ()=>{
+function getCurrDate(){
     let currTime = new Date()
-    let strTime = currTime.toLocaleTimeString('en-IN', {year:'numeric', month:'long', day:'numeric'}).toUpperCase();
-    return strTime;
+    let strDate = currTime.toLocaleTimeString('en-IN', {year:'numeric', month:'long', day:'numeric'}).toUpperCase();
+    return strDate;
 }
 
 
