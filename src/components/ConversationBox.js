@@ -7,7 +7,7 @@ export default function ConversationBox(){
 
     const {conversation, updateResponse} = useContext(ConversationContext);
 
-    console.log('conv',conversation);
+    // console.log('conv',conversation);
 
     return (
         <div style={{maxHeight:600, overflowY:'auto'}}>

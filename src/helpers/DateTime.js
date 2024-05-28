@@ -8,7 +8,7 @@ function getCurrTime(){
 
 function getCurrDate(){
     let currTime = new Date()
-    let strDate = currTime.toLocaleTimeString('en-IN', {year:'numeric', month:'long', day:'numeric'}).toUpperCase();
+    let strDate = currTime.toLocaleDateString('en-IN', {year:'numeric', month:'long', day:'numeric'}).toUpperCase();
     return strDate;
 }
 

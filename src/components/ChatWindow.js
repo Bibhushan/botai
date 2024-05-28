@@ -12,7 +12,7 @@ const chats=[
     {question:'Hi, how are you', answer: 'Get immediate AI generated response'},
 ]
 
-export default function ChatWindow({inputHandler, questionHandler, cardQuestionHandler, conversation, saveConversationHandler, likeDislikeHandler}){
+export default function ChatWindow({inputHandler, questionHandler, cardQuestionHandler, conversation, saveConversationHandler}){
 
     const topChats = chats; 
 

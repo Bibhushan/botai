@@ -20,7 +20,7 @@ function App() {
   const [currQuestion, setCurrQuestion] = useState('');
   const [isCardQuestion, setIsCardQuestion] = useState(false);
 
-  const [conversation, setConversation] = useState({date:'', responses:[], feedback:''});
+  const [conversation, setConversation] = useState({date:'', responses:[], maxRating:''});
   const[pastConversations, setPastConversations] = useLocalStorage('botai-conversations', '');
 
   const handleMiniMenu = ()=>{
@@ -55,7 +55,11 @@ function App() {
   }
 
   const saveConversationHandler = ()=>{
-    setPastConversations([...pastConversations, conversation]);
+    let thisConv = {...conversation}
+    let allRatings = thisConv.responses.map((resp)=>{return Number(resp.rating)});
+    thisConv.maxRating = Math.max(...allRatings);
+    thisConv.date = getCurrDate();
+    setPastConversations([...pastConversations, thisConv]);
   }
 
   useEffect(()=> {
@@ -70,7 +74,7 @@ function App() {
       if (currQuestion.length > 0){
           // let strTime = getCurrTime();
           if ((conversation.length <= 1 && isCardQuestion === false) || ['hi', 'hello'].includes(currQuestion.toLowerCase())){
-              setConversation({...conversation, date:getCurrDate()})
+              // setConversation({...conversation, date:getCurrDate()})
               addResponse(true, 'Hi There. How can I assist you today?')
               // setConversation({...conversation, responses:[...conversation.responses, {isBot:true, response:'Hi There. How can I assist you today?', time:strTime, rating:0, feedback:''}]});
           }
@@ -106,16 +110,21 @@ function App() {
 
   }, [])
 
+  const startNewConversation = ()=>{
+    setConversation({date:'', responses:[], maxRating:''});
+  }
+
   return (
     <div className="App">
-      <Grid container>
+      <div style={{display:'flex', justifyContent:'space-between', alignItems:'start'}}>
         {showMenu &&
-          <Grid item sm={2}>
-            <PastChats/>
-          </Grid>
+          <div >
+            <PastChats newConversationHandler={startNewConversation}/>
+          </div>
         }
-        <Grid item sm={10} 
-          style={{background: 'linear-gradient(180deg, rgba(215, 199, 244, 0.2) 0%, rgba(151, 133, 186, 0.2) 100%)', padding:'0.5rem 1rem'}} 
+        <div 
+          style={{background: 'linear-gradient(180deg, rgba(215, 199, 244, 0.2) 0%, rgba(151, 133, 186, 0.2) 100%)', 
+                  padding:'0.5rem 1rem', width:'100%', height:'100%'}} 
         >
           <div style={{display:'flex', alignItems:'center'}}>
             {showMenu || 
@@ -125,7 +134,7 @@ function App() {
                   style={{height:16, width:'auto', padding:'0rem 0.5rem 0rem 0rem'}}
                   onClick={handleMiniMenu}
                 />
-                {showMiniMenu && <PastChats/>}
+                {showMiniMenu && <PastChats newConversationHandler={startNewConversation}/>}
               </div>
             }
             <h1 style={{textAlign:'left', color:'#9785BA', padding:0, margin:0}}>Bot AI</h1>
@@ -139,8 +148,8 @@ function App() {
               saveConversationHandler={saveConversationHandler}
             />
           </ConversationContext.Provider>
-        </Grid>
-      </Grid>
+        </div>
+      </div>
     </div>
   );
 }
