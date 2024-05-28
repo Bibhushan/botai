@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import menu from './assets/menu.png';
 import sampleData from './assets/sampleData.json'
 import useLocalStorage from 'use-local-storage';
-import { getCurrDate, getCurrTime } from './assets/helpers/DateTime';
+import { getCurrDate, getCurrTime } from './helpers/DateTime';
 
 function App() {
 
@@ -88,10 +88,6 @@ function App() {
 
   }, [])
 
-  const likeDislikeHandler = ()=>{
-    console.log('like / dislike clicked.')
-  }
-
   return (
     <div className="App">
       <Grid container>
@@ -122,7 +118,6 @@ function App() {
             cardQuestionHandler = {setCardQuestion}
             conversation = {conversation}
             saveConversationHandler={saveConversationHandler}
-            likeDislikeHandler = {likeDislikeHandler}
           />
         </Grid>
       </Grid>
