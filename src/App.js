@@ -8,6 +8,7 @@ import sampleData from './assets/sampleData.json'
 import useLocalStorage from 'use-local-storage';
 import { getCurrDate, getCurrTime } from './helpers/DateTime';
 import { ConversationContext } from './components/ConversationContext';
+import ChatHistory from './components/ChatHistory';
 
 function App() {
 
@@ -20,8 +21,10 @@ function App() {
   const [currQuestion, setCurrQuestion] = useState('');
   const [isCardQuestion, setIsCardQuestion] = useState(false);
 
-  const [conversation, setConversation] = useState({date:'', responses:[], maxRating:''});
-  const[pastConversations, setPastConversations] = useLocalStorage('botai-conversations', '');
+  const [conversation, setConversation] = useState({responses:[], maxRating:''});
+  const[pastConversations, setPastConversations] = useLocalStorage('botai-conversations', []);
+
+  const[isChatHistory, setIsChatHistory] = useState(false);
 
   const handleMiniMenu = ()=>{
     setShowMiniMenu(!showMiniMenu);
@@ -112,6 +115,15 @@ function App() {
 
   const startNewConversation = ()=>{
     setConversation({date:'', responses:[], maxRating:''});
+    hideChatHistory();
+  }
+
+  const showChatHistory = ()=>{
+    if (pastConversations) setIsChatHistory(true);
+  }
+
+  const hideChatHistory = ()=>{
+    setIsChatHistory(false);
   }
 
   return (
@@ -119,7 +131,7 @@ function App() {
       <div style={{display:'flex', justifyContent:'space-between', alignItems:'start'}}>
         {showMenu &&
           <div >
-            <PastChats newConversationHandler={startNewConversation}/>
+            <PastChats newConversationHandler={startNewConversation} chatHistoryHandler={showChatHistory}/>
           </div>
         }
         <div 
@@ -134,19 +146,23 @@ function App() {
                   style={{height:16, width:'auto', padding:'0rem 0.5rem 0rem 0rem'}}
                   onClick={handleMiniMenu}
                 />
-                {showMiniMenu && <PastChats newConversationHandler={startNewConversation}/>}
+                {showMiniMenu && <PastChats newConversationHandler={startNewConversation} chatHistoryHandler={showChatHistory}/>}
               </div>
             }
             <h1 style={{textAlign:'left', color:'#9785BA', padding:0, margin:0}}>Bot AI</h1>
           </div>
           <ConversationContext.Provider value={{conversation, updateResponse}} >
-            <ChatWindow 
-              inputHandler={inputHandler} 
-              questionHandler={questionHandler}
-              cardQuestionHandler = {setCardQuestion}
-              conversation = {conversation}
-              saveConversationHandler={saveConversationHandler}
-            />
+            { isChatHistory ? 
+              <ChatHistory history={pastConversations}/>
+              :
+              <ChatWindow 
+                inputHandler={inputHandler} 
+                questionHandler={questionHandler}
+                cardQuestionHandler = {setCardQuestion}
+                conversation = {conversation}
+                saveConversationHandler={saveConversationHandler}
+              />
+          }
           </ConversationContext.Provider>
         </div>
       </div>
