@@ -47,7 +47,7 @@ function App() {
   const addResponse = (isBot, response)=>{
     let strTime = getCurrTime();
     setConversation({...conversation, responses:[...conversation.responses, 
-            {isBot:{isBot}, response:response, time:strTime, rating:0, feedback:''}]})
+            {isBot:isBot, response:response, time:strTime, rating:0, feedback:''}]})
   }
 
   const updateResponse = (index, feedback, rating)=>{
